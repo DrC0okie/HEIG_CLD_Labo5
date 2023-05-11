@@ -25,7 +25,9 @@ In this task, we will set up a local Kubernetes test cluster and deploy an examp
 
 ## Subtask 1.1 - Installation of Minikube
 
+We had no problem installing Minikube. Proof of this the screenshot showing the installed version :
 
+![](.\figures\minikube_installation.png)
 
 ## Subtask 1.2 - Installation of Kubectl
 

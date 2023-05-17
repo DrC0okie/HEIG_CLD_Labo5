@@ -112,29 +112,50 @@ Then, using the kubectl port forwarding `kubectl port-forward frontend 8081:8080
 
 # Task 2 - Deploy the application in Kubernetes engine
 
-
-
-## Subtask 2.1 - Create projet
-
-
-
-## Subtask 2.2 - Create a cluster
+We did not have any difficulty creating the cluster in GKE. Once created, our GKE clusters overview looked like this:
 
 
 
-
-
-## Subtask 2.3 - Deploy the application on the cluster
-
-
-
-## Subtask 2.4 - Deploy the todo-frontend service
+![](figures/GKE_Overview.png)
 
 
 
+Then we created the frontend-svc.yaml configuration file:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: frontend
+  name: frontend-svc
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: todo
+    component: frontend
+```
 
 
-## Verify the todo application
+
+In order to deploy the cluster, we had to install the gcloud auth plugin with this command `gcloud components install gke-gcloud-auth-plugin`. 
+
+Once we deploy the service with de command `kubectl create -f frontend-svc.yaml` we can get the load balancer IP to access the todo app using the command `kubectl describe service frontend-svc`. 
+
+![](figures/get-svc.png)
+
+or for less details, with de command `kubectl get frontend-svc` and retrieve the EXTERNAL-IP. 
+
+![](figures/get-svc-frontend-svc.png)
+
+Finally we can access the deployed Todos app
+
+![](figures/App_deployed_on_GKE.png)
 
 
 

@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: icclabcna/ccp2-k8s-todo-api
+        image: registry.iict.ch/cld/cld-docker-images/icclabcna/ccp2-k8s-todo-api
         ports:
         - containerPort: 8081
         env:

@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: icclabcna/ccp2-k8s-todo-frontend
+        image: registry.iict.ch/cld/cld-docker-images/icclabcna/ccp2-k8s-todo-frontend
         ports:
         - containerPort: 8080
         env:

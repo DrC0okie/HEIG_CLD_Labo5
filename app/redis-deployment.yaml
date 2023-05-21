@@ -19,10 +19,10 @@ spec:
     spec:
       containers:
       - name: redis
-        image: redis
+        image: registry.iict.ch/cld/cld-docker-images/redis
         ports:
         - containerPort: 6379
         args:
         - redis-server 
-        - --requirepass ccp2 
-        - --appendonly yes
+        - --requirepass 
+        - ccp2

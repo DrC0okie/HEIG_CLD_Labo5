@@ -23,7 +23,7 @@ In this task, we will set up a local Kubernetes test cluster and deploy an examp
 
 ## Subtask 1.1 & 1.2- Installation of Minikube & Kubectl
 
-We had no problem installing Minikube and kubectl. Proof of this the screenshot showing the installed version :
+We had no problem installing Minikube and kubectl. Here is the screenshot showing the installed version :
 
 ![](.\figures\minikube_installation.png)
 
@@ -39,17 +39,25 @@ The cluster creation process was easy to follow, and we did not have any issue d
 
 Once again, we didn't encounter any issue deploying the application. 
 
-### Redis deployment
+### Kubernetes description
+
+The following screenshot shows the Kubernetes service description:
+
+![](figures/Description_kubernetes-svc.png)
+
+### Redis deployment & description
 
 The following image shows the Redis deployment with the `redis-svc` and `redis-pod` with config files:
 
 ![](figures/redisSVC_redisPOD_creation.png)
 
-The following screenshot shows the description of the redis service:
+The following screenshot shows the description of the redis service and pod:
 
 ![](figures/Description_redis-svc.png)
 
-### Api deployment
+![](figures/Description_redis-pod.png)
+
+### Api deployment & description
 
 We created the api-svc config file as asked in the lab:
 
@@ -75,11 +83,13 @@ The following screenshot shows the deployment of the `api-svc` and `api-pod` wit
 
 ![](figures/api_Creation.png)
 
-The following screenshot shows the description of the api pod
+The following screenshot shows the description of the api service and pod
+
+![](figures/Description_api-svc.png)
 
 ![](figures/api_description.png)
 
-### Front-end deployment
+### Front-end deployment & description
 
 Here is our frontend-api configuration file. The `API_ENDPOINT_URL` environment variable should be set to the address of our API service within the Kubernetes cluster, so the URL would be `http://api-svc:8081`.
 
@@ -106,15 +116,17 @@ Now we just have to deploy the frontend pod:
 
 ![](figures/frontend_creation.png)
 
+The following screenshot shows the description of the frontend pod :
+
+![](figures/Description_frontend-pod.png)
+
 Then, using the kubectl port forwarding `kubectl port-forward frontend 8081:8080`, we can access the web app and see that it is served properly:
 
 ![](figures/todo_webApp.png)
 
 # Task 2 - Deploy the application in Kubernetes engine
 
-We did not have any difficulty creating the cluster in GKE. Once created, our GKE clusters overview looked like this:
-
-
+We did not have any difficulty creating the cluster in GKE. Once created, GKE details page looked like this:
 
 ![](figures/GKE_Overview.png)
 
@@ -157,8 +169,6 @@ Finally we can access the deployed Todos app
 
 ![](figures/App_deployed_on_GKE.png)
 
-
-
 # Task 3 - Add and exercise resilience
 
 Firstly we had to delete existing pods with the commands
@@ -171,7 +181,9 @@ kubectl delete pod frontend
 
 Then we verified that our pods were actually deleted with the command  `kubectl get pods`
 
-Now we had to create the 3 deployment configurations as follow:
+## 3.1 Add deployments
+
+Then we had to create the 3 deployment configurations as follow:
 
 redis-deployment.yaml:
 
@@ -202,11 +214,9 @@ spec:
         - containerPort: 6379
         args:
         - redis-server # Command to start the Redis server
-        - --requirepass pass #  Configures Redis to require the password "pass"
+        - --requirepass ccp2 #  Configures Redis to require a password 
         - --appendonly yes # Enables append-only mode to keep a log of all write operations
 ````
-
-
 
 api-deployment.yaml:
 
@@ -239,10 +249,8 @@ spec:
         - name: REDIS_ENDPOINT
           value: redis-svc
         - name: REDIS_PWD
-          value: pass
+          value: ccp2
 ````
-
-
 
 frontend-deployment.yaml:
 
@@ -276,13 +284,33 @@ spec:
           value: "http://api-svc:8081" # Internal URL of the API service within the cluster
 ````
 
+### Use only 1 instance for the Redis-Server. Why?
 
+If multiple instances wants to write in multiple databases, we need to set a synchronization to be sure that all the data written in any of the database are available to be read. But we don't want to manage database synchronization. For a so small application it would be overkill.
 
 One the configuration files created, we only have to deploy them using `kubectl apply` command, and see if they are available :
 
 ![](figures/Deployments.png)
 
-## Verify the functionnality of replica set
+### Verify that the application is still working and the Replica Sets are in place.
+
+redis deployment description:
+
+![](figures/Description_redis-deployment.png)
+
+api deployment description:
+
+![](figures/Description_api-deployment.png)
+
+frontend deployment description (note that we have taken this screenshot after adding a frontend instance):
+
+![](figures/Description_frontend-deployment.png)
+
+All resources (note that we have taken this screenshot 4 days after the effective deployment on GKE):
+
+![](figures/task3_get_all.png)
+
+## 3.2 Verify the functionality of replica set
 
 In order to do that, we will monitor the pods and delete 2 pods to see what appends.
 
@@ -311,7 +339,7 @@ The time it takes to recreate a Pod depends on multiple things:
 
 It is possible to change temporarily the number of instances with the `kubectl scale` command, for example: `kubectl scale deployment frontend-deployment --replicas=3`
 
-![](C:\Users\timot\Documents\HEIG\CLD\Labos\HEIG_CLD_Labo5\figures\Task3_add_temp_pod.png)
+![](figures/Task3_add_temp_pod.png)
 
 These changes are temporary and will be lost the next time we apply the original Deployment configuration with `kubectl apply`. 
 

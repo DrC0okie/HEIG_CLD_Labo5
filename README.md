@@ -1,5 +1,5 @@
 # CLD - LAB05 : Kubernetes
-**Group R : A. David, T. Van Hove**
+**Group S : A. David, T. Van Hove**
 
 **Date : 25.05.2023**
 
@@ -21,8 +21,6 @@ In the first part of this lab we will install a Kubernetes test cluster on our l
 >
 > The goal of the provided example application is to store and edit a To Do list. The application consists of a simple Web UI (Frontend) that uses a REST API (API service) to access a Key-Value storage service (Redis). Ports to be used for Pods and Services are shown in the figure.
 >
-
-
 
 ## 1.1 & 1.2- Installation of Minikube & Kubectl
 
@@ -50,11 +48,11 @@ The following screenshot shows the Kubernetes service description:
 
 ### Deploy the Redis Service and Pod
 
-The following screenshot shows the Redis deployment with the `redis-svc` and `redis-pod` with the config files:
+The following screenshot shows the Redis deployment with the `redis-svc` and `redis-pod` with the config files :
 
 ![](figures/redisSVC_redisPOD_creation.png)
 
-The following screenshots show the description of the redis service and pod:
+The following screenshots show the description of the redis service and pod :
 
 ![](figures/Description_redis-svc.png)
 
@@ -62,7 +60,7 @@ The following screenshots show the description of the redis service and pod:
 
 ### Deploy the ToDo-API Service and Pod
 
-We created the api-svc config file as asked in the lab:
+We created the api-svc config file as asked in the lab :
 
 ```yaml
 apiVersion: v1
@@ -115,7 +113,7 @@ spec:
       value: "http://api-svc:8081"
 ```
 
-Now we just have to deploy the frontend pod:
+Now we just have to deploy the frontend pod :
 
 ![](figures/frontend_creation.png)
 
@@ -125,7 +123,7 @@ The following screenshot shows the description of the frontend pod :
 
 ### Verify the ToDo application
 
-Then, using the kubectl port forwarding `kubectl port-forward frontend 8081:8080`, we can access the web app and see that it is served properly:
+Then, using the kubectl port forwarding `kubectl port-forward frontend 8081:8080`, we can access the web app and see that it is served properly :
 
 ![](figures/todo_webApp.png)
 
@@ -139,17 +137,17 @@ Then, using the kubectl port forwarding `kubectl port-forward frontend 8081:8080
 
 > Take a screenshot of the cluster details from the GKE console.
 
-We did not have any issue creating the cluster in GKE. Once created, GKE details page looked like this:
+We did not have any issue creating the cluster in GKE. Once created, GKE details page looked like this :
 
 ![](figures/GKE_Overview.png)
 
-## 2.3 - Deploy the application on the cluster
+## 2.3 - Deploy the application on the . cluster
 
-We did not encounter any problems deploying the pods and services on the GKE cluster
+We did not encounter any problems deploying the pods and services on the GKE cluster.
 
 ## 2.4 - Deploy the ToDo-Frontend Service
 
-First, we created the frontend-svc.yaml configuration file:
+First, we created the frontend-svc.yaml configuration file :
 
 ```yaml
 apiVersion: v1
@@ -174,29 +172,27 @@ spec:
 
 Then, in order to deploy the cluster, we had to install the gcloud auth plugin with this command `gcloud components install gke-gcloud-auth-plugin`. 
 
-
-
 > Copy the output of the `kubectl describe` command to describe your load balancer once completely initialized.
 >
 > Find out the public URL of the Frontend Service load balancer using `kubectl describe`.
 
-Once we deploy the service with de command `kubectl create -f frontend-svc.yaml` we can get the load balancer ip to access the todo app using the command `kubectl describe service frontend-svc`. 
+Once we deploy the service with de command `kubectl create -f frontend-svc.yaml` we can get the load balancer IP to access the "todo" app using the command `kubectl describe service frontend-svc` :
 
 ![](figures/get-svc.png)
 
-or for less details, with de command `kubectl get frontend-svc` and retrieve the EXTERNAL-IP. 
+For less details, we also can use the command `kubectl get frontend-svc` and retrieve the EXTERNAL-IP :
 
 ![](figures/get-svc-frontend-svc.png)
 
 > Access the public URL of the Service with a browser. You should be able to access the complete application and create a new ToDo.
 
-Finally we can access the deployed Todos app
+Finally we can access the deployed Todos app :
 
 ![](figures/App_deployed_on_GKE.png)
 
 > Document any difficulties you faced and how you overcame them. Copy the object descriptions into the lab report (if they are unchanged from the previous task just say so).
 
-Apart from the ip addresses, identifiers or dates, the other objects were not modified. We just added the front-end service. We provided the screenshot of the front-end service description earlier.
+Apart from the IP addresses, identifiers or dates, the other objects were not modified. We just added the frontend service. We provided the screenshot of the frontend service description earlier.
 
 # Task 3 - Add and exercise resilience
 
@@ -204,7 +200,7 @@ Apart from the ip addresses, identifiers or dates, the other objects were not mo
 
 ## 3.1 Add deployments
 
-Firstly we had to delete existing pods with the commands
+Firstly, we had to delete existing pods with the commands :
 
 ````powershell
 kubectl delete pod redis
@@ -212,11 +208,11 @@ kubectl delete pod api
 kubectl delete pod frontend
 ````
 
-Then we verified that our pods were actually deleted with the command  `kubectl get pods`
+Then we verified that our pods were actually deleted with the command  `kubectl get pods`.
 
-Then we had to create the 3 deployment configurations as follow:
+Then, we had to create the 3 deployment configurations as follow. 
 
-redis-deployment.yaml:
+The "redis-deployment.yaml" file's content :
 
 ````yaml
 apiVersion: apps/v1
@@ -249,7 +245,7 @@ spec:
         - --appendonly yes # Enables append-only mode to keep a log of all write operations
 ````
 
-api-deployment.yaml:
+The "api-deployment.yaml" file's content :
 
 ````yaml
 apiVersion: apps/v1
@@ -283,7 +279,7 @@ spec:
           value: ccp2
 ````
 
-frontend-deployment.yaml:
+And the "frontend-deployment.yaml" file's content :
 
 ````yaml
 ![Deployments](C:\Users\timot\Documents\HEIG\CLD\Labos\HEIG_CLD_Labo5\figures\Deployments.png)apiVersion: apps/v1
@@ -315,31 +311,29 @@ spec:
           value: "http://api-svc:8081" # Internal URL of the API service within the cluster
 ````
 
-
-
 > Use only 1 instance for the Redis-Server. Why?
 
-If multiple instances wants to write in multiple databases, we need to set a synchronization to be sure that all the data written in any of the database are available to be read. But we don't want to manage database synchronization. For a so small application it would be overkill.
+If multiple instances want to write to multiple databases, we need to establish synchronization to ensure that all the data written to any of the databases is available for reading. However, we do not want to handle database synchronization ourselves. For such a small application, it would be excessive.
 
-One the configuration files created, we only have to deploy them using `kubectl apply` command, and see if they are available :
+Once the configuration files are created, you simply need to deploy them using the `kubectl apply` command and then verify their availability :
 
 ![](figures/Deployments.png)
 
 > Verify that the application is still working and the Replica Sets are in place.
 
-redis deployment description:
+"redis-deployment" description :
 
 ![](figures/Description_redis-deployment.png)
 
-api deployment description:
+"api-deployment" description :
 
 ![](figures/Description_api-deployment.png)
 
-frontend deployment description (note that we have taken this screenshot after adding a frontend instance):
+"frontend-deployment" description (note that we have taken this screenshot after adding a frontend instance) :
 
 ![](figures/Description_frontend-deployment.png)
 
-All resources (note that we have taken this screenshot 4 days after the effective deployment on GKE):
+All resources (note that we have taken this screenshot 4 days after the effective deployment on GKE) :
 
 ![](figures/task3_get_all.png)
 
@@ -347,9 +341,9 @@ All resources (note that we have taken this screenshot 4 days after the effectiv
 
 ## 3.2 Verify the functionality of replica set
 
-In order to do that, we will monitor the pods and delete 2 pods to see what appends.
+To achieve this, we will monitor the pods and delete 2 pods to observe the outcome.
 
-We can see in the screenshot below that when we delete a pod, it is automatically recreated after deletion. The api pod has been recreated in 3 seconds and the redis pod in 7 seconds.
+We can observe in the screenshot below that when a pod is deleted, it is automatically recreated after deletion. The "api" pod was recreated within 3 seconds, and the "redis" pod within 7 seconds.
 
 ![](figures/Task3_kill_pods.png)
 
@@ -357,7 +351,7 @@ We can see in the screenshot below that when we delete a pod, it is automaticall
 
 > What happens if you delete a Frontend or API Pod?
 
-1. We delete the Pod using `kubectl delete`.
+1. We delete the Pod using the `kubectl delete` command.
 2. The Kubernetes API server receives the deletion request and marks the Pod for deletion.
 3. The kubelet on the node where the Pod was running notices that the Pod has been marked for deletion, stops the Pod's containers, and then removes the Pod from the node.
 4. The Deployment or ReplicaSet controller in the Kubernetes control plane notices that the number of running Pods is less than the desired number of replicas specified in the Deployment or ReplicaSet.
@@ -365,24 +359,18 @@ We can see in the screenshot below that when we delete a pod, it is automaticall
 6. The Kubernetes scheduler assigns the new Pod to a node, and the kubelet on that node starts the Pod.
 7. The new Pod starts, and the application becomes available again.
 
-
-
 > What happens when you delete the Redis Pod?
 
 Exactly the same as any other pod, except that the system might take a little more time to recreate the pod.
-
-
 
 > How long does it take for the system to react?
 
 The time it takes to recreate a Pod depends on multiple things. For example for the redis pod:
 
-1. **Image size**: Larger images take longer to pull from the registry. If the Redis image is larger than the api image, or if the Redis image is not already cached on the node where the new Pod is being scheduled, it will take longer to pull the image, which could explain the delay.
-2. **Startup time**: Some applications take longer to start up than others. Redis, for example, may take some time to initialize its data structures, load data into memory, or perform other setup tasks.
-3. **Pod scheduling**: Kubernetes scheduler might take some time to schedule the pod depending on the current load, resource requests and limits.
-4. **Persistent storage**: If the Redis Pod is configured with a Persistent Volume, the system might need additional time to detach the volume from the old Pod and attach it to the new Pod.
-
-
+1. **Image size**: Larger images take more time to be pulled from the registry. If the Redis image is larger than the API image, or if the Redis image is not already cached on the node where the new Pod is scheduled, it will take more time to pull the image, which could explain the delay.
+2. **Startup time**: Indeed, certain applications take longer to start up than others. Redis, for example, may require some time to initialize its data structures, load data into memory, or perform other setup tasks. This initialization process can contribute to the additional time it takes for the application to become fully available.
+3. **Pod scheduling**: The Kubernetes scheduler may take some time to schedule the pod based on the current workload, resource requests, and limits. It considers factors such as the current cluster load, resource requirements, and constraints before assigning a node to the pod. This scheduling process can introduce a delay as the scheduler evaluates the available resources and makes decisions to ensure optimal placement of the pod.
+4. **Persistent storage**: If the Redis pod is configured with a persistent volume, the system may require additional time to detach the volume from the old pod and attach it to the new pod. This process involves ensuring data integrity and proper synchronization between the volume and the pod. Consequently, it can contribute to the delay in the pod becoming fully available.
 
 > How can you change the number of instances temporarily to 3?
 
@@ -392,37 +380,35 @@ It is possible to change temporarily the number of instances with the `kubectl s
 
 These changes are temporary and will be lost the next time we apply the original Deployment configuration with `kubectl apply`. 
 
-
-
 > What autoscaling features are available? Which metrics are used?
 
-Kubernetes provides the capability to automatically scale our application based on different metrics of the Horizontal Pod Autoscaler (HPA) and the Vertical Pod Autoscaler (VPA).
+Kubernetes provides the ability to automatically scale our application based on various metrics using the Horizontal Pod Autoscaler (HPA) and Vertical Pod Autoscaler (VPA).
 
-`HPA` automatically scales the number of Pods in a replication controller, deployment or replica set based on observed CPU utilization or, with custom metrics support, on some other application-provided metrics. The controller periodically adjusts the number of replicas in a Deployment or ReplicaSet to match the observed average CPU utilization to the target specified by the user. It can also scale based on memory usage and custom metrics (if custom metrics are set up in the cluster).
+The HPA (Horizontal Pod Autoscaler) automatically adjusts the number of Pods in a replication controller, deployment, or replica set based on the observed CPU utilization or, with the support of custom metrics, other metrics provided by the application. The controller periodically adjusts the number of replicas in a deployment or replica set to match the average observed CPU utilization to the user-specified target. It can also adapt based on memory utilization and custom metrics (if custom metrics are configured in the cluster).
 
-On the other hand, `VPA` automatically adjusts the CPU and memory reservations for the Pods to help "right size" the application. It continually analyzes the CPU and memory usage of Pods and dynamically adjusts their CPU and memory requests as necessary. This can be useful for applications that have changing resource requirements over time.
+On the other hand, the `VPA` automatically adjusts the CPU and memory reservations for Pods to help "right-size" the application. It continuously analyzes the CPU and memory usage of the Pods and dynamically adjusts their CPU and memory requests if necessary. This can be particularly useful for applications with resource needs that change over time.
 
 For `HPA`, the metrics used can be:
 
 - **CPU Utilization**: This is the default metric. The target value is a percentage of the CPU request of the Pod containers.
-- **Memory Utilization**: This is an optional metric and it has to be provided explicitly.
-- **Custom Metrics**: Custom metrics are metrics not related to CPU and memory. These can be provided by the user or third-party services. Examples include request rate, response latency, etc.
+- **Memory Utilization**: This is an optional metric that needs to be explicitly provided.
+- **Custom Metrics**: Custom metrics are measurements that are not related to CPU and memory. They can be provided by the user or third-party services. Examples include request rate, response latency, etc.
 
-`VPA` uses historical CPU and memory usage data to adjust the CPU and memory requests of the Pods.
+The `VPA` utilizes historical data on CPU and memory usage to adjust the CPU and memory requests of the Pods. By analyzing past resource usage patterns, the `VPA` determines appropriate CPU and memory requests for the Pods, ensuring that they are provisioned with the necessary resources based on their historical utilization. This helps optimize resource allocation and improve efficiency in the application's resource utilization.
 
 
 
 > How can you update a component?
 
-Updating a Deployment can be done by changing the Deployment configuration file and applying those changes with `kubectl apply`. The `kubectl apply` command updates the Deployment to match the state defined in the configuration file. Kubernetes will then automatically perform a rolling update to achieve the desired state. This means it will gradually replace old Pods with new ones, ensuring that the application remains available during the update.
+Updating a deployment can be done by modifying the deployment's configuration file and applying these changes using `kubectl apply` command. The `kubectl apply` command updates the deployment to match the desired state defined in the configuration file. Kubernetes will automatically perform a rolling update to achieve the desired state. This means it will gradually replace the old pods with the new ones, ensuring that the application remains available during the update process.
 
-If we're updating the image to deploy a new version of our application, we can also use the `kubectl set image` command to update the image directly without editing the configuration file. For example:
+If we are updating the image to deploy a new version of our application, we can also use the `kubectl set image` command to directly update the image without editing the configuration file. For example:
 
 ```bash
 kubectl set image deployment/api-deployment api=icclabcna/ccp2-k8s-todo-api:v2
 ```
 
-This command updates the `api` container in the `api-deployment` Deployment to use the `icclabcna/ccp2-k8s-todo-api:v2` image.
+This command updates the `api` container in the `api-deployment` deployment to use the `icclabcna/ccp2-k8s-todo-api:v2` image.
 
 # Task 4 - Deploy on IICT Kubernetes cluster
 
@@ -440,25 +426,24 @@ For the deployment, we did exactly as we did for the GKE deployment, expect addi
 
 ![](figures/Task4_Deployment.png)
 
-Here are the screenshots of the redis service and the redis deployment descriptions:
+Here are the screenshots of the redis service and the redis deployment descriptions :
 
 ![](figures/Task4_description_redis_service.png)
 
 ![](figures/Task4_description_redis_deployment.png)
 
-Here are the screenshots of the api service and the api deployment descriptions:
+Here are the screenshots of the api service and the api deployment descriptions :
 
 ![](figures/Task4_description_api_service.png)
 
 ![](figures/Task4_description_api_deployment.png)
 
-Here are the screenshots of the frontend service and the frontend deployment descriptions:
+Here are the screenshots of the frontend service and the frontend deployment descriptions :
 
 ![](figures/Task4_description_frontend_service.png)
 
 ![](figures/Task4_description_frontend_deployment.png)
 
-
-
-Finally, we could access the todos application using the ip address displayed in the frontend service description: `10.192.129.207`:
+Finally, we were able to access the todos application using the IP address displayed in
+the frontend service description `10.192.129.207`:
 ![](figures/App_deployed_on_IICT.png)
